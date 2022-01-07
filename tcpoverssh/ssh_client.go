@@ -124,6 +124,16 @@ func (impl *sshClientImpl) Output(cmd string) (output []byte, err error) {
 			return err
 		}
 
+		modes := ssh.TerminalModes{
+			ssh.ECHO:          0,
+			ssh.TTY_OP_ISPEED: 14400,
+			ssh.TTY_OP_OSPEED: 14400,
+		}
+		err = session.RequestPty("xterm", 25, 80, modes)
+		if err != nil {
+			return err
+		}
+
 		output, err = session.CombinedOutput(cmd)
 
 		return err
